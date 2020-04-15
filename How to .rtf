@@ -1,0 +1,111 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+{\colortbl ;\red0\green77\blue187;\red255\green0\blue0;\red0\green0\blue0;\red0\green176\blue80;}
+{\*\generator Riched20 10.0.14393}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\ul\b\f0\fs40\lang9 How to install setup Transmission Server on VPS Running Centos 5 or 6 for Downloading Torrents Anonymously (AKA making a Seedbox)\ulnone\b0\fs22\par
+\par
+\par
+\cf1\ul\b\fs24 Step 1:\cf0\ulnone\b0\fs22  Make sure your server is all up to date by using the command:\par
+\cf2\tab yum update -y\par
+\cf1\ul\b\fs24 Step 2:\cf0\ulnone\b0\fs22  Upload the "install-transmission.sh" script to your VPS Server via WinSCP or any other \tab FTP program such as Filezila.\par
+\cf1\ul\b\fs24 Step 3:\cf0\ulnone\b0\fs22\tab Set the proper permissions of the script by typing "\cf2 chmod u+x install-transmission.sh\cf0 " \tab (without the " ")into your VPS Server via SSH.\par
+\cf1\ul\b\fs24 Step 4: \cf0\ulnone\b0\fs22 Run the script by typing "\cf2 ./install-transmission.sh\cf0 " (without the " ").\par
+\cf1\ul\b\fs24 Step 5: \cf0\ulnone\b0\fs22 The script will then ask you to choose a Username. So go ahead and choose one then hit \tab "enter" on your keyboard to continue.\par
+\cf1\ul\b\fs24 Step 6: \cf0\ulnone\b0\fs22 The script will now prompt you to choose a password. So go ahead and choose one \tab then hit "enter" on your keyboard to continue.\par
+\tab This will no start the process of installing all the necessary programs and files to the \tab server in order for the transmission server to run. \par
+\cf2\b ***NOTE*** This part can take several minutes to complete depending on your server.\cf0\b0\par
+\cf1\ul\b\fs24 Step 7:\cf2\ulnone\b0\fs22  \cf0 Now we want to install the apache webserver. To do so type the following command:\par
+\tab\cf2 yum install httpd -y \cf0\par
+\cf1\ul\b\fs24 Step 8: \cf3\ulnone\b0\fs22 Now we need to start the apache webserver using the command:\fs24\par
+\fs22\tab\cf2 service httpd start\cf3\fs24\par
+\cf1\ul\b Step 9: \cf3\ulnone\b0 Now we need to make tell the server to make the webserver start with the VPS \tab server every time at bootup. We do this with the following command:\par
+\tab\cf2\fs22 chkconfig httpd on\fs24\par
+\cf1\ul\b Step 10: \cf3\ulnone\b0\fs22 Now we need to create a separate folder inside the main Webserver folder which is \tab "/var/www/html/". The folder name you choose does not matter. This is where we are \tab going to set all the movies to download to later on.\par
+\par
+To do so you will need to type the command:\par
+\tab\cf2 mkdir /var/www/html/<the new folder name here>\cf3\par
+but without the < >.\par
+\tab\tab\cf4\b example:\cf3\b0\par
+\tab\tab\tab\cf2 mkdir /var/www/html/movies\cf0\par
+\cf1\ul\b\fs24 Step 11: \cf0\ulnone\b0\fs22 Once the server is done installing everything you need to go to your computers web \tab browser and type in your servers ip with the port number 9091 after it in the following format:\par
+\tab SERVERIPHERE:9091\par
+\tab\tab\cf4\b Example:\cf0\b0\par
+\tab\tab\tab\cf2 127.0.0.1:9091\par
+\b ***NOTE*** If this DOES NOT load anything up then you will need to open up ports 80 and 9091 in the server firewall. You can do this by entering in each of the following commands into the server:\par
+\tab iptables -I INPUT -p udp --dport 9091 -j ACCEPT\par
+\par
+\tab iptables -I INPUT -p udp --sport 9091 -j ACCEPT\par
+\par
+\tab iptables -I INPUT -p tcp --dport 9091 -j ACCEPT\par
+\par
+\tab iptables -I INPUT -p tcp --sport 9091 -j ACCEPT\par
+\par
+\tab iptables -I INPUT -p udp --dport 80 -j ACCEPT\par
+\par
+\tab iptables -I INPUT -p udp --sport 80 -j ACCEPT\par
+\par
+\tab iptables -I INPUT -p tcp --dport 80 -j ACCEPT\par
+\par
+\tab iptables -I INPUT -p tcp --sport 80 -j ACCEPT\par
+\par
+\tab service iptables save\par
+\par
+\tab service transmissiond restart\par
+\par
+Now refresh the webpage again and it should open now.\par
+\b0\par
+\cf1\ul\b\fs24 Step 12: \cf3\ulnone\b0\fs22 Now it should ask for a username and password. Use the one you created back on steps 5-6. Enter this in.\par
+\cf1\ul\b\fs24 Step 13:\cf3\ulnone\b0\fs22  Click on the wrench icon on the bottom left hand corner of the screen. This will open a settings window where we will configure a few last minute things. \par
+\cf1\ul\b\fs24 Step 14: \cf3\ulnone\b0\fs22 Under the "Torrents" tab of this window you should see a section that says "Downloading". Under this you will see a box that says "Download to:" next to it. This box tells the server where to download all the torrents to. in the box you will put the directory you made in step 10. \par
+For example in my video i used /var/www/html/downloads as the directory. So if you also used that then thats what you will want to type into this field. If you used something different after the "/var/www/html" then just put whatever you decided to use.\par
+\cf1\ul\b\fs24 Step 15: \cf3\ulnone\b0\fs22 This next step is completely optional. If you DONT want your server to seed after its done downloading (For example if your server has limited bandwidth) then in the "Torrents" Tab under "Seeding" click the checkbox next to "Stop seeding at ratio" and in the text box next to it just type the number "0". This will insure you server doesnt start seeding the torrent after downloading it thus reducing bandwidth usage. \par
+Step 16: Now click on the tab that says "Network". \par
+\tab Under this tab there will be a section called "Listening port". \par
+\tab Under here there will be a text box that says "peer listening port next to it. Under this it \tab will either say "Port is Open" or "Port is Closed".\par
+\tab If its says "Port is Open" then all is good to go so move on to the next step.\par
+\tab If it says "Port is Closed" then we need to open whatever port is in the text box in the \tab server firewall. To do so we need to type the following commands into the server:\par
+\tab\tab iptables -I INPUT -p udp --dport 51413 -j ACCEPT\par
+\tab\tab iptables -I INPUT -p udp --sport 51413 -j ACCEPT\par
+\tab\tab iptables -I INPUT -p tcp --dport 51413 -j ACCEPT\par
+\tab\tab iptables -I INPUT -p tcp --sport 51413 -j ACCEPT\par
+\cf2\b ***NOTE*** Where the part "<PORT>" is in each of those commands you will want to type the port number that was shown under "Peer Listening port".\par
+\tab example: lets say the port shown under "Peer listening port" said 1100 then you will \tab want to type:\par
+\tab\tab iptables -I INPUT -p udp --dport 1100 -j ACCEPT\par
+\tab\tab iptables -I INPUT -p udp --sport 1100-j ACCEPT\par
+\tab\tab iptables -I INPUT -p tcp --dport 1100 -j ACCEPT\par
+\tab\tab iptables -I INPUT -p tcp --sport 1100 -j ACCEPT\par
+\cf3\b0 Now type: \par
+"service iptables save" and then "service transmissiond restart.\par
+Now just refresh the page in your web browser and click on the wrench icon, and go back to the "Network tab". If everthing was done correctly then it should now say "Port is Open".\par
+\cf1\ul\b\fs24 Step 16: \cf3\ulnone\b0\fs22 Now you can click the little "X" on the top right hand corner of the settings window to close it as we are now finished with that\par
+\cf1\ul\b\fs24 Step 17: \cf3\ulnone\b0\fs22 Go to your favorite torrent website and choose one to download. where it has the download link or it shows something like "Magnet Link" right click that and then left click on "copy link address"\par
+\cf1\ul\b\fs24 Step 18: \cf3\ulnone\b0\fs22 Now that you have copied the link address of the torrents magnet link go back to the transmission webpage and click on the folder icon at the top left hand corner. \par
+\cf1\ul\b\fs24 Step 19: \cf3\ulnone\b0\fs22 This will then open a window that says "upload torrent files" In the text box that says "Or enter a URL" paste in the magnet link you copied from the torrent site and then hit the button that says "Upload"\par
+\cf1\ul\b\fs24 Step 20: \cf3\ulnone\b0\fs22 This will now start downloading the torrent you selected to your server.\par
+\cf2\ul\b\fs24 ***NOTE***\par
+\ulnone If you get an error message under the torrent file name in the transmission gui saying something about permissions denied then run the following command in your server:\par
+\i\par
+chmod 777 <Your HTTPD Directory Name that you made>\par
+example:\par
+\tab chmod 777 /var/www/html/downloads\par
+\cf3\b0\i0\fs22\par
+ Once its finished open another tab in your computers browser.\par
+\cf1\ul\b\fs24 Step 21: \cf3\ulnone\b0\fs22 In this new tab type in your servers ip address followed by a "/" and the name of the folder that you made inside of "/var/www/html/". \par
+example: \par
+if you made the folder "/var/www/html/downloads"\par
+like i did then you would type:\par
+\tab SERVERIP/downloads\par
+\tab\tab example:\par
+\tab\tab\tab 127.0.0.1/downloads\par
+This will open up everything you downloaded to the server in your webbrowser. From here you can download your torrent from your server to your computer.\par
+\par
+---------------------------------------------------------------------------------------------------------------------\par
+\par
+\cf0 As always feel free to Leave a comment on the video if you run into any issues and need help. \par
+\par
+You can also add me on skype for further assistance should you need it.\par
+\par
+Skype name : \cf2 fbi_cybercrimewatcher\cf0\par
+\par
+\par
+}
+ 
